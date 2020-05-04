@@ -1,0 +1,11 @@
+.controls-root {
+  display: 'flex';
+  height: 100%;
+  flex-direction: column;
+  padding: 8px;
+  flex-wrap: nowrap;
+}
+.controls-header {
+  display: flex;
+  justify-content: center;
+}
