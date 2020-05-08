@@ -1,0 +1,10 @@
+.dash-table-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.previous-next-container {
+  justify-content: flex-end;
+  display: flex !important;
+}

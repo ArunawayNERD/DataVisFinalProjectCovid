@@ -8,4 +8,74 @@
 .controls-header {
   display: flex;
   justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.controls-group-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 8px;
+}
+
+.controls-group-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.controls-group-item {
+  display: flex;
+  margin: 4px;
+}
+
+.controls-country-toggle-group {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.controls-button {
+  /* display: flex; */
+  flex: 1 1 auto;
+  background-color: transparent;
+  min-height: 35px;
+  border: 1px solid #bbb;
+  text-align: center;
+}
+
+.controls-button-selected {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.controls-button-left {
+  border-right: 0px;
+  border-radius: 4px 0px 0px 4px;
+}
+
+.controls-button-right {
+  border-left: 0px;
+  border-radius: 0px 4px 4px 0px;
+}
+
+.controls-scale-type-group {
+  flex-direction: column;
+}
+
+.controls-scale-type-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.controls-time-slider {
+  width: 100%;
+  padding: 8px 20px !important;
+}
+
+.controls-time-labels {
+  justify-content: space-between;
 }
