@@ -5,8 +5,8 @@ from dash.exceptions import PreventUpdate
 
 from app import app
 
-from data import countries
-from components.left_column import store_ids, countries_ids,  covid_data_ids, countries_data_store_keys, covid_data_store_keys
+from data import countries, days
+from components.left_column import store_ids, countries_ids, covid_data_ids, time_range_ids, countries_data_store_keys, covid_data_store_keys, time_store_keys
 
 
 ######################
@@ -17,11 +17,8 @@ from components.left_column import store_ids, countries_ids,  covid_data_ids, co
     Output(store_ids['countries_id'], 'data'), 
     [Input(countries_ids['filter_mode_id'], 'value'),
      Input(countries_ids['dropdown_id'], 'value'),],
-    [State(store_ids['countries_id'], 'data')]
 )
-def store_selected_countries(is_filter_additive, selected_country_codes, store):
-
-    stored_data = store if store != None else {}
+def store_selected_countries(is_filter_additive, selected_country_codes):
     selected_codes = []
 
     if is_filter_additive:
@@ -29,9 +26,9 @@ def store_selected_countries(is_filter_additive, selected_country_codes, store):
     else:
         selected_codes = [ country['value'] for country in countries if country['value'] not in selected_country_codes]
 
-    stored_data[countries_data_store_keys['selected_county_codes']] = selected_codes
+    store_data = {countries_data_store_keys['selected_county_codes']:selected_codes}
 
-    return stored_data
+    return store_data
 
 
 #######################
@@ -91,7 +88,31 @@ def update_clicked_button_style(store):
     return confirmed_className, deaths_className, recovered_className
 
 
+#######################
+# Time Range controls #
+#######################
 
+@app.callback(
+    Output(store_ids['time_range_id'], 'data'),
+    [Input(time_range_ids['slider'], 'value')]
+)
+def store_time_range(selected_index):
+    return {time_store_keys['end_date_index']: selected_index}
 
+@app.callback(
+    Output(time_range_ids['selected_text'], 'children'),
+    [Input(store_ids['time_range_id'], 'data')]
+)
+def update_slider_tooltip(store):
+    selected_index = 0
+    
+    if store == None or time_store_keys['end_date_index'] not in store:
+        raise PreventUpdate
+    else:
+        selected_index = store[time_store_keys['end_date_index']]
+
+    selected_day = days[selected_index]
+
+    return "Selected: " + days[0] + " to " + selected_day,
 
 

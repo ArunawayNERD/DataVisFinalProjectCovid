@@ -20,6 +20,7 @@
   border-radius: 4px;
   padding: 8px;
   margin: 8px;
+  width: calc(100% - 32px);
 }
 
 .controls-group-header {
@@ -78,4 +79,14 @@
 
 .controls-time-labels {
   justify-content: space-between;
+}
+
+.controls-graphs-toggle {
+  display: flex;
+  align-items: baseline;
+}
+
+.controls-time-slider-label {
+  font-weight: 600;
+  margin-bottom: -8px;
 }

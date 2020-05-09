@@ -19,10 +19,13 @@ covid_data_ids = dict(
     scale_id="covid-data-scale",
 )
 
-store_ids = dict(countries_id="countires-store", covid_data_id="covid-data-store",)
+time_range_ids = dict(slider="time_slider_id", selected_text="time_range_display")
+
+store_ids = dict(countries_id="countires-store", covid_data_id="covid-data-store", time_range_id="time-range-store")
 
 countries_data_store_keys = dict(selected_county_codes="selected_county_codes")
 covid_data_store_keys = dict(selected_button_id="data_source", selected_scale_value="scale_mode")
+time_store_keys = dict(end_date_index="end_date_index")
 
 
 scaleOptions = [
@@ -37,6 +40,7 @@ left_column = html.Div(
         html.Div("Controls", className="controls-header"),
         dcc.Store(id=store_ids["countries_id"]),
         dcc.Store(id=store_ids["covid_data_id"]),
+        dcc.Store(id=store_ids["time_range_id"]),
         html.Div(
             [
                 html.Div("Countries", className="controls-group-item controls-group-header"),
@@ -95,19 +99,25 @@ left_column = html.Div(
         ),
         html.Div(
             [
-                html.Div("Time Range", className="controls-group-item controls-group-header",),
+                html.Div("Time", className="controls-group-item controls-group-header",),
                 html.Div(
-                    html.Div(
+                    id=time_range_ids["selected_text"],
+                    children="Selected: " + days[0] + " to " + days[-1],
+                    className="controls-group-item",
+                ),
+                html.Div("Update", className="controls-time-slider-label controls-group-item",),
+                html.Div(
+                    [
                         dcc.Slider(
-                            id="time-range-slider",
+                            id=time_range_ids["slider"],
                             max=(len(days) - 1),
                             value=(len(days) - 1),
                             step=1,
                             updatemode="drag",
                             className="controls-time-slider",
                         ),
-                        className="controls-group-item",
-                    )
+                    ],
+                    className="controls-group-item",
                 ),
                 html.Div(
                     [html.Div(days[0]), html.Div(days[-1])], className="controls-time-labels controls-group-item ",
@@ -123,9 +133,29 @@ left_column = html.Div(
                     dcc.Dropdown(id="first-graph-axis", options=countries, multi=True, style={"width": "100%"},),
                     className="controls-group-item",
                 ),
+                html.Div(
+                    daq.BooleanSwitch(
+                        on=True,
+                        label={"style": {"margin": "0px"}, "label": "Aggregate Country Data"},
+                        labelPosition="right",
+                        disabled=False,
+                    ),
+                    className="controls-graphs-toggle controls-group-item",
+                ),
+                html.Hr(className="controls-group-item"),
                 html.Div("Second x-axis", className="controls-group-item"),
                 html.Div(
                     dcc.Dropdown(id="second-graph-axis", options=countries, multi=True, style={"width": "100%"},),
+                    className="controls-group-item",
+                ),
+                html.Div(
+                    daq.BooleanSwitch(
+                        on=True,
+                        label={"style": {"margin": "0px", "color": "#9E9E9E"}, "label": "Aggregate Country Data"},
+                        labelPosition="right",
+                        disabled=True,
+                        color="#9E9E9E",
+                    ),
                     className="controls-group-item",
                 ),
             ],
