@@ -8,3 +8,6 @@ summary_data = pd.read_csv("./data/global_summary.csv")
 
 country_column_key = "Country/Region"
 countries = list(summary_data[country_column_key])
+
+days = list(global_confirmed.columns[2:])
+print(days)
