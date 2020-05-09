@@ -4,7 +4,7 @@ import dash_html_components as html
 import plotly.express as px
 import plotly.graph_objects as go
 
-from data import country_column_key, global_confirmed, days
+from data import country_name_column_key, country_code_column_key, global_confirmed, days
 
 
 def produce_line_graph(data, countries):
@@ -14,8 +14,6 @@ def produce_line_graph(data, countries):
 
     # for each country selected
     country_data = data.loc[data["Code"] == "USA", :].values[0][2:]
-
-    print(country_data)
 
     lineGraph.add_trace(go.Scatter(x=days, y=country_data))
 

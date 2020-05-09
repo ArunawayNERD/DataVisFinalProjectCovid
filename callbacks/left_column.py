@@ -5,43 +5,45 @@ from dash.exceptions import PreventUpdate
 
 from app import app
 
-from components.left_column import store_ids, covid_data_ids, covid_data_store_keys
+from data import countries
+from components.left_column import store_ids, countries_ids,  covid_data_ids, countries_data_store_keys, covid_data_store_keys
+
+
+######################
+# Countries controls #
+######################
 
 @app.callback(
-    [Output(covid_data_ids['confirmed_button_id'], 'className'),
-     Output(covid_data_ids['deaths_button_id'], 'className'),
-     Output(covid_data_ids['recovered_button_id'], 'className')], 
-    [Input(store_ids['covid_data_filters_id'], 'data')]
+    Output(store_ids['countries_id'], 'data'), 
+    [Input(countries_ids['filter_mode_id'], 'value'),
+     Input(countries_ids['dropdown_id'], 'value'),],
+    [State(store_ids['countries_id'], 'data')]
 )
-def update_clicked_button_style(store):
+def store_selected_countries(is_filter_additive, selected_country_codes, store):
 
-    if store == None or covid_data_store_keys['selected_button_id'] not in store:
-        raise PreventUpdate
+    stored_data = store if store != None else {}
+    selected_codes = []
 
-    selected_id = store[covid_data_store_keys['selected_button_id']]
-    
-    confirmed_className = 'controls-button-left controls-button'
-    deaths_className = 'controls-button'
-    recovered_className = "controls-button-right controls-button"
-
-    if selected_id == covid_data_ids['confirmed_button_id']:
-        confirmed_className = "controls-button-selected " + confirmed_className
-
-    elif selected_id == covid_data_ids['deaths_button_id']:
-        deaths_className = "controls-button-selected " + deaths_className
-
+    if is_filter_additive:
+        selected_codes = selected_country_codes
     else:
-        recovered_className = "controls-button-selected " + recovered_className
+        selected_codes = [ country['value'] for country in countries if country['value'] not in selected_country_codes]
 
-    return confirmed_className, deaths_className, recovered_className
+    stored_data[countries_data_store_keys['selected_county_codes']] = selected_codes
 
+    return stored_data
+
+
+#######################
+# Covid data controls #
+#######################
 @app.callback(
-    Output(store_ids['covid_data_filters_id'], 'data'), 
+    Output(store_ids['covid_data_id'], 'data'), 
     [Input(covid_data_ids['confirmed_button_id'], 'n_clicks'),
      Input(covid_data_ids['deaths_button_id'], 'n_clicks'),
      Input(covid_data_ids['recovered_button_id'], 'n_clicks'), 
      Input(covid_data_ids['scale_id'], 'value')],
-    [State(store_ids['covid_data_filters_id'], 'data')]
+    [State(store_ids['covid_data_id'], 'data')]
 )
 def store_covid_data_control_selection(confirmed, deaths, recovered, scale_value, store):
     context = dash.callback_context
@@ -62,7 +64,31 @@ def store_covid_data_control_selection(confirmed, deaths, recovered, scale_value
 
     return stored_data
 
+@app.callback(
+    [Output(covid_data_ids['confirmed_button_id'], 'className'),
+     Output(covid_data_ids['deaths_button_id'], 'className'),
+     Output(covid_data_ids['recovered_button_id'], 'className')], 
+    [Input(store_ids['covid_data_id'], 'data')]
+)
+def update_clicked_button_style(store):
 
+    if store == None or covid_data_store_keys['selected_button_id'] not in store:
+        raise PreventUpdate
+
+    selected_id = store[covid_data_store_keys['selected_button_id']]
+    
+    confirmed_className = 'controls-button-left controls-button'
+    deaths_className = 'controls-button'
+    recovered_className = "controls-button-right controls-button"
+
+    if selected_id == covid_data_ids['confirmed_button_id']:
+        confirmed_className = "controls-button-selected " + confirmed_className
+    elif selected_id == covid_data_ids['deaths_button_id']:
+        deaths_className = "controls-button-selected " + deaths_className
+    else:
+        recovered_className = "controls-button-selected " + recovered_className
+
+    return confirmed_className, deaths_className, recovered_className
 
 
 

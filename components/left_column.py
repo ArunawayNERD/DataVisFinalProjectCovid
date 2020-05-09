@@ -10,6 +10,8 @@ from data import countries, days
 #######
 # IDS #
 # #####
+countries_ids = dict(filter_mode_id="countries-filter-mode", dropdown_id="countries-selector")
+
 covid_data_ids = dict(
     confirmed_button_id="covid-data-confirmed-button",
     deaths_button_id="covid-data-deaths-button",
@@ -17,12 +19,12 @@ covid_data_ids = dict(
     scale_id="covid-data-scale",
 )
 
-store_ids = dict(covid_data_filters_id="covid-data-store",)
+store_ids = dict(countries_id="countires-store", covid_data_id="covid-data-store",)
 
+countries_data_store_keys = dict(selected_county_codes="selected_county_codes")
 covid_data_store_keys = dict(selected_button_id="data_source", selected_scale_value="scale_mode")
 
 
-countryOptions = [{"label": country, "value": country} for country in countries]
 scaleOptions = [
     {"label": "Total", "value": "Total"},
     {"label": "Total (Logarithmic)", "value": "TotalLog"},
@@ -33,20 +35,23 @@ scaleOptions = [
 left_column = html.Div(
     [
         html.Div("Controls", className="controls-header"),
-        dcc.Store(id="countires-selected-store"),
+        dcc.Store(id=store_ids["countries_id"]),
+        dcc.Store(id=store_ids["covid_data_id"]),
         html.Div(
             [
                 html.Div("Countries", className="controls-group-item controls-group-header"),
                 html.Div(
                     children=[
                         html.Div("Subtractive"),
-                        daq.ToggleSwitch(id="countries-filter-mode", value=True),
+                        daq.ToggleSwitch(id=countries_ids["filter_mode_id"], value=True),
                         html.Div("Additive"),
                     ],
                     className="controls-country-toggle-group controls-group-item",
                 ),
                 html.Div(
-                    dcc.Dropdown(id="countries-selector", options=countryOptions, multi=True, style={"width": "100%"},),
+                    dcc.Dropdown(
+                        id=countries_ids["dropdown_id"], options=countries, multi=True, style={"width": "100%"},
+                    ),
                     className="controls-group-item ",
                 ),
             ],
@@ -55,7 +60,6 @@ left_column = html.Div(
         html.Div(
             [
                 html.Div("Covid-19 Data", className="controls-group-item controls-group-header"),
-                dcc.Store(id=store_ids["covid_data_filters_id"]),
                 html.Div(
                     children=[
                         html.Button(
@@ -116,12 +120,12 @@ left_column = html.Div(
                 html.Div("Graph Options", className="controls-group-item controls-group-header",),
                 html.Div("First x-axis", className="controls-group-item"),
                 html.Div(
-                    dcc.Dropdown(id="first-graph-axis", options=countryOptions, multi=True, style={"width": "100%"},),
+                    dcc.Dropdown(id="first-graph-axis", options=countries, multi=True, style={"width": "100%"},),
                     className="controls-group-item",
                 ),
                 html.Div("Second x-axis", className="controls-group-item"),
                 html.Div(
-                    dcc.Dropdown(id="second-graph-axis", options=countryOptions, multi=True, style={"width": "100%"},),
+                    dcc.Dropdown(id="second-graph-axis", options=countries, multi=True, style={"width": "100%"},),
                     className="controls-group-item",
                 ),
             ],
