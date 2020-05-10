@@ -21,11 +21,34 @@ covid_data_ids = dict(
 
 time_range_ids = dict(slider="time_slider_id", selected_text="time_range_display")
 
-store_ids = dict(countries_id="countires-store", covid_data_id="covid-data-store", time_range_id="time-range-store")
+graph_options_id = dict(
+    graph_one_axis="graph-options-one-axis",
+    graph_two_axis="graph-options-two-axis",
+    graph_one_switch="graph-options-one-switch",
+    graph_two_switch="graph-options-two-switch",
+)
+
+store_ids = dict(
+    countries_id="countires-store",
+    covid_data_id="covid-data-store",
+    time_range_id="time-range-store",
+    graph_options_id="graph_options_store",
+)
 
 countries_data_store_keys = dict(selected_county_codes="selected_county_codes")
+
 covid_data_store_keys = dict(selected_button_id="data_source", selected_scale_value="scale_mode")
+
 time_store_keys = dict(end_date_index="end_date_index")
+
+graph_options_store_keys = dict(
+    graph_one_axis="graph_one_axis",
+    graph_two_axis="graph_two_axis",
+    graph_one_switch="graph_one_switch",
+    graph_one_disable="graph_one_disable",
+    graph_two_switch="graph_two_switch",
+    graph_two_disable="graph_two_disable",
+)
 
 
 scaleOptions = [
@@ -35,12 +58,20 @@ scaleOptions = [
     {"label": "Percentage of Population", "value": "Percent",},
 ]
 
+plot_x_axis_options = [
+    {"label": "Time", "value": "Time"},
+    {"label": "Population", "value": "Pop"},
+    {"label": "Population Density", "value": "PopDen"},
+    {"label": "Population Percentage 60+", "value": "Pop60"},
+]
+
 left_column = html.Div(
     [
         html.Div("Controls", className="controls-header"),
         dcc.Store(id=store_ids["countries_id"]),
         dcc.Store(id=store_ids["covid_data_id"]),
         dcc.Store(id=store_ids["time_range_id"]),
+        dcc.Store(id=store_ids["graph_options_id"]),
         html.Div(
             [
                 html.Div("Countries", className="controls-group-item controls-group-header"),
@@ -130,11 +161,18 @@ left_column = html.Div(
                 html.Div("Graph Options", className="controls-group-item controls-group-header",),
                 html.Div("First x-axis", className="controls-group-item"),
                 html.Div(
-                    dcc.Dropdown(id="first-graph-axis", options=countries, multi=True, style={"width": "100%"},),
+                    dcc.Dropdown(
+                        id=graph_options_id["graph_one_axis"],
+                        options=plot_x_axis_options,
+                        value="Time",
+                        clearable=False,
+                        style={"width": "100%"},
+                    ),
                     className="controls-group-item",
                 ),
                 html.Div(
                     daq.BooleanSwitch(
+                        id=graph_options_id["graph_one_switch"],
                         on=True,
                         label={"style": {"margin": "0px"}, "label": "Aggregate Country Data"},
                         labelPosition="right",
@@ -145,11 +183,18 @@ left_column = html.Div(
                 html.Hr(className="controls-group-item"),
                 html.Div("Second x-axis", className="controls-group-item"),
                 html.Div(
-                    dcc.Dropdown(id="second-graph-axis", options=countries, multi=True, style={"width": "100%"},),
+                    dcc.Dropdown(
+                        id=graph_options_id["graph_two_axis"],
+                        options=plot_x_axis_options,
+                        value="Pop",
+                        clearable=False,
+                        style={"width": "100%"},
+                    ),
                     className="controls-group-item",
                 ),
                 html.Div(
                     daq.BooleanSwitch(
+                        id=graph_options_id["graph_two_switch"],
                         on=True,
                         label={"style": {"margin": "0px", "color": "#9E9E9E"}, "label": "Aggregate Country Data"},
                         labelPosition="right",

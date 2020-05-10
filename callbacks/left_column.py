@@ -6,7 +6,7 @@ from dash.exceptions import PreventUpdate
 from app import app
 
 from data import countries, days
-from components.left_column import store_ids, countries_ids, covid_data_ids, time_range_ids, countries_data_store_keys, covid_data_store_keys, time_store_keys
+from components.left_column import store_ids, countries_ids, covid_data_ids, time_range_ids, graph_options_id, countries_data_store_keys, covid_data_store_keys, time_store_keys, graph_options_store_keys
 
 
 ######################
@@ -114,5 +114,85 @@ def update_slider_tooltip(store):
     selected_day = days[selected_index]
 
     return "Selected: " + days[0] + " to " + selected_day,
+
+##########################
+# Graph options controls #
+##########################
+
+@app.callback(
+    Output(store_ids['graph_options_id'], 'data'),
+    [Input(graph_options_id['graph_one_axis'], 'value'), 
+     Input(graph_options_id['graph_two_axis'], 'value'),
+     Input(graph_options_id['graph_one_switch'], 'on'), 
+     Input(graph_options_id['graph_two_switch'], 'on')],
+    [State(store_ids['graph_options_id'], 'data')]
+)
+def store_graph_options(axis_one, axis_two, switch_one, switch_two, store):
+    
+    store_data = {
+        graph_options_store_keys['graph_one_axis']:axis_one, 
+        graph_options_store_keys['graph_two_axis']:axis_two, 
+        graph_options_store_keys['graph_one_switch']:switch_one, 
+        graph_options_store_keys['graph_two_switch']:switch_two,
+        graph_options_store_keys['graph_one_disable']: axis_one != "Time",
+        graph_options_store_keys['graph_two_disable']: axis_two != "Time",
+    }
+
+    return store_data
+
+    
+@app.callback(
+    [Output(graph_options_id['graph_one_switch'], 'disabled'),
+     Output(graph_options_id['graph_one_switch'], 'color'), 
+     Output(graph_options_id['graph_one_switch'], 'label')],
+    [Input(store_ids['graph_options_id'], 'data')]
+)
+def check_for_and_disable_switch_one(store):
+
+    label = {"style": {"margin": "0px"}, "label": "Aggregate Country Data"}
+
+    if (store == None or graph_options_store_keys['graph_one_disable'] not in store):
+        raise PreventUpdate
+
+    is_disabled = store[graph_options_store_keys['graph_one_disable']]
+    color = "#9E9E9E" if is_disabled else None
+    
+    if is_disabled:
+        label['style']["color"] = "#9E9E9E"
+
+    return is_disabled, color, label
+
+
+@app.callback(
+    [Output(graph_options_id['graph_two_switch'], 'disabled'),
+     Output(graph_options_id['graph_two_switch'], 'color'), 
+     Output(graph_options_id['graph_two_switch'], 'label')],
+    [Input(store_ids['graph_options_id'], 'data')]
+)
+def check_for_and_disable_switch_two(store):
+
+    label = {"style": {"margin": "0px"}, "label": "Aggregate Country Data"}
+
+    if (store == None or graph_options_store_keys['graph_two_disable'] not in store):
+        raise PreventUpdate
+
+    is_disabled = store[graph_options_store_keys['graph_two_disable']]
+    color = "#9E9E9E" if is_disabled else None
+    
+    if is_disabled:
+        label['style']["color"] = "#9E9E9E"
+
+    return is_disabled, color, label
+
+    
+        
+        
+    
+
+
+
+
+
+
 
 
